@@ -1,3 +1,3 @@
 # SJTU_Archive
 
-Archive for SJTU SE course, Research and Internship
+Archive repo for SJTU SE course, Research and Internship.
