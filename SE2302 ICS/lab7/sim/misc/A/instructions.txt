@@ -1,0 +1,3 @@
+./yas  ./A/sum.ys && ./yis  ./A/sum.yo
+./yas  ./A/rsum.ys && ./yis  ./A/rsum.yo
+./yas  ./A/copy.ys && ./yis  ./A/copy.yo

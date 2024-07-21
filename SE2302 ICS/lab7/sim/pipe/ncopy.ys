@@ -1,0 +1,235 @@
+#/* $begin ncopy-ys */
+##################################################################
+# ncopy.ys - Copy a src block of len words to dst.
+# Return the number of positive words (>0) contained in src.
+#
+# Include your name and ID here.
+# 赵楷越 Zhaokaiyue 522031910803
+#
+# Describe how and why you modified the baseline code.
+# 1. Change irmovq&addq into iaddq, to reduce the number of instructions
+# eg. irmovq $8, %r8 addq %r8, %rdi -> iaddq $8, %rdi
+#
+# 2. Loop unrolling, to reduce the cost due to original loops.
+# eg. 
+# Loop0: 
+#     mrmovq (%rdi), %r8 # read val from src...
+#     rmmovq %r8, (%rsi) # ...and store it to dst
+#     andq %r8, %r8 # val <= 0?
+#     jle Loop1
+#     iaddq $1, %rax     
+# Loop1:
+#     mrmovq 8(%rdi), %r8 # read val from src...
+#     rmmovq %r8, 8(%rsi) # ...and store it to dst
+#     andq %r8, %r8 # val <= 0?
+#     jle Loop2
+#     iaddq $1, %rax  
+# ...(repeat 6 times)
+#
+# 3. Handle the situation that the remaining len is not a multiple of 8.
+# eg. if len < 8, then use different ways to copy the rest of the data.
+# Remain7:
+#     mrmovq 48(%rdi), %r8 	# read val from src...
+#     rmmovq %r8, 48(%rsi) 	# ...and store it to dst  
+#     andq %r8, %r8 		# val <= 0?
+#     jle Remain6
+#     iaddq $1, %rax 
+# Remain6:
+#     mrmovq 40(%rdi), %r8 	# read val from src...
+#     rmmovq %r8, 40(%rsi) 	# ...and store it to dst
+#     andq %r8, %r8 		# val <= 0?
+#     jle Remain5
+#     iaddq $1, %rax 
+# ...(repeat 6 times)
+#
+# 4. Use the idea of binary search to reduce the CPE when initial len < 8.
+# eg. 
+# LessThan8:
+#     iaddq $4, %rdx
+#     jl LessThan4
+#     je Remain4
+#     iaddq $-2, %rdx
+#     jl Remain5
+#     je Remain6
+#     jmp Remain7
+# LessThan4:
+#	 (do the similar thing as LessThan8)
+#
+# 5. Remove the bubble due to load and use hazard.
+# eg. Method: Load the next value before using the current value, 
+# combine two loops into one loop. Consequently, the bubble disappears.
+# Loop: 
+#     mrmovq (%rdi), %r8 # read val from src...
+# 	  mrmovq 8(%rdi), %r9 # read val from src...
+#     rmmovq %r8, (%rsi) # ...and store it to dst
+#     rmmovq %r9, 8(%rsi) # ...and store it to dst
+#     andq %r8, %r8 # val <= 0?
+#     jle Loop1
+#     iaddq $1, %rax     
+# Loop1:
+#     andq %r9, %r9 # val <= 0?
+#     jle Loop2
+#     iaddq $1, %rax  
+# ...(repeat 6 times)
+#6. Finally, I found that the last part of the remainers can also avoid load and use hazards.
+#	I searched and asked my roommate for some ideas to optimize the code.
+#   eg. I changed the original code: Remain6 to Remain6 and Remain62 to achieve the same effect.
+#   also, the situation of Remain7 and Remain3 should be considered differently beacuse of binary search method.
+##################################################################
+# Do not modify this portion
+# Function prologue.
+# %rdi = src, %rsi = dst, %rdx = len
+ncopy:
+
+##################################################################
+# You can modify this portion
+    # Loop header
+    # xorq %rax,%rax        # count = 0; # of positive vals
+    iaddq $-8, %rdx
+    jl  LessThan8
+Loop0: 
+    mrmovq (%rdi), %r8 		# read val from src...
+	mrmovq 8(%rdi), %r9 	# read val from src...
+    rmmovq %r8, (%rsi) 		# ...and store it to dst
+    rmmovq %r9, 8(%rsi) 	# ...and store it to dst
+    andq %r8, %r8 			# val <= 0?
+    jle Loop1
+    iaddq $1, %rax     		# count++
+Loop1:
+    andq %r9, %r9 			# val <= 0?
+    jle Loop2
+    iaddq $1, %rax  
+Loop2:
+    mrmovq 16(%rdi), %r8 	# read val from src...
+	mrmovq 24(%rdi), %r9 	# read val from src...
+    rmmovq %r8, 16(%rsi) 	# ...and store it to dst
+    rmmovq %r9, 24(%rsi) 	# ...and store it to dst
+    andq %r8, %r8 			# val <= 0?
+    jle Loop3
+    iaddq $1, %rax  		# count++
+Loop3:
+    andq %r9, %r9 			# val <= 0?
+    jle Loop4
+    iaddq $1, %rax  
+Loop4:
+    mrmovq 32(%rdi), %r8 	# read val from src...
+	mrmovq 40(%rdi), %r9 	# read val from src...
+    rmmovq %r8, 32(%rsi) 	# ...and store it to dst
+    rmmovq %r9, 40(%rsi) 	# ...and store it to dst
+    andq %r8, %r8 			# val <= 0?
+    jle Loop5
+    iaddq $1, %rax  		# count++
+Loop5:
+    andq %r9, %r9 			# val <= 0?
+    jle Loop6
+    iaddq $1, %rax  
+Loop6:
+    mrmovq 48(%rdi), %r8 	# read val from src...
+	mrmovq 56(%rdi), %r9 	# read val from src...
+    rmmovq %r8, 48(%rsi) 	# ...and store it to dst
+    rmmovq %r9, 56(%rsi) 	# ...and store it to dst
+    andq %r8, %r8 			# val <= 0?
+    jle Loop7
+    iaddq $1, %rax  		# count++
+Loop7:
+    andq %r9, %r9 			# val <= 0?
+    jle LoopTest
+    iaddq $1, %rax  		# count++
+LoopTest:					# Test whether the remaining len is a multiple of 8
+    iaddq $64, %rdi         # %rdi = src, %rsi = dst, %rdx = len
+    iaddq $64, %rsi         
+    iaddq $-8, %rdx         
+    jge Loop0               # if the remaining len > 0, continue to loop0
+LessThan8:
+    iaddq $4, %rdx			# Handle the situation that the remaining len is not a multiple of 8
+    jl LessThan4
+    je Remain4
+    iaddq $-2, %rdx 		# Use the idea of binary search to reduce the CPE when initial len < 8
+	jl Remain5
+	je Remain6
+    jmp Remain7
+LessThan4:
+    iaddq $3, %rdx
+    je Remain1
+    iaddq $-1, %rdx
+	je Remain2
+	jg Remain3n
+    jmp Done
+Remain3n:
+	mrmovq 16(%rdi), %r8	# read val from src...
+	rmmovq %r8, 16(%rsi)	# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+Remain2n:
+	mrmovq 8(%rdi), %r8		# read val from src...
+	jle Remain22n			# if so, goto Npos:
+	iaddq $1, %rax			# count++
+Remain22n:
+	rmmovq %r8, 8(%rsi)		# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+Remain1n:
+	mrmovq (%rdi), %r8		# read val from src...
+	jle Remain12n			# if so, goto Npos:
+	iaddq $1, %rax			# count++
+Remain12n:
+	rmmovq %r8, (%rsi)		# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+	jle Done				# if so, goto Npos:
+	iaddq $1, %rax			# count++
+	jmp Done
+Remain7:
+	mrmovq 48(%rdi), %r8	# read val from src...
+	rmmovq %r8, 48(%rsi)	# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+Remain6:
+	mrmovq 40(%rdi), %r8	# read val from src...
+	jle Remain62			# if so, goto Npos:
+	iaddq $1, %rax			# count++
+Remain62:
+	rmmovq %r8, 40(%rsi)	# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+Remain5:
+	mrmovq 32(%rdi), %r8	# read val from src...
+	jle Remain52			# if so, goto Npos:
+	iaddq $1, %rax			# count++
+Remain52:	
+	rmmovq %r8, 32(%rsi)	# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+Remain4:
+	mrmovq 24(%rdi), %r8	# read val from src...
+	jle Remain42			# if so, goto Npos:
+	iaddq $1, %rax			# count++
+Remain42:
+	rmmovq %r8, 24(%rsi)	# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+Remain3:
+	mrmovq 16(%rdi), %r8	# read val from src...
+	jle Remain32			# if so, goto Npos:
+	iaddq $1, %rax			# count++
+Remain32:
+	rmmovq %r8, 16(%rsi)	# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+Remain2:
+	mrmovq 8(%rdi), %r8		# read val from src...
+	jle Remain22			# if so, goto Npos:
+	iaddq $1, %rax			# count++
+Remain22:
+	rmmovq %r8, 8(%rsi)		# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+Remain1:
+	mrmovq (%rdi), %r8		# read val from src...
+	jle Remain12			# if so, goto Npos:
+	iaddq $1, %rax			# count++
+Remain12:
+	rmmovq %r8, (%rsi)		# ...and store it to dst
+	andq %r8, %r8			# val <= 0?
+	jle Done				# if so, goto Npos:
+	iaddq $1, %rax			# count++
+##################################################################
+# Do not modify the following section of code
+# Function epilogue.
+Done:
+	ret
+##################################################################
+# Keep the following label at the end of your function
+End:
+#/* $end ncopy-ys */
