@@ -1,0 +1,13 @@
+﻿  main.cc
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(35,1): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(35,1): error C2065: “always_inline”: 未声明的标识符
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(35,14): error C2146: 语法错误: 缺少“;”(在标识符“uint64_t”的前面)
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(36,1): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(37,13): warning C4244: “return”: 从“const uint64_t”转换到“int”，可能丢失数据
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(40,1): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(40,1): error C2374: “__attribute__”: 重定义；多次初始化
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(35,1): message : 参见“__attribute__”的声明
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(40,1): error C2065: “always_inline”: 未声明的标识符
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(40,14): error C2146: 语法错误: 缺少“;”(在标识符“uint64_t”的前面)
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(41,1): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+D:\Horizon\SJTU\Projects\ongoing\DS\hw2\hw2\hw2\MurmurHash3.h(48,10): warning C4244: “return”: 从“uint64_t”转换到“int”，可能丢失数据

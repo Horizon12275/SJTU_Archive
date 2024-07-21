@@ -1,0 +1,205 @@
+\PassOptionsToPackage{quiet}{xeCJK}
+\documentclass[]{article}
+\usepackage[]{ctex}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+\title{基数树项目报告}
+\author{赵楷越 522031910803}
+\date{2024年 4月 11日}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{float}
+\bibliographystyle{plain}
+
+\begin{document}
+
+\maketitle
+    
+\section{背景介绍}
+在这个实验中，我要完成两个任务，分别是普通基数树的构建以及压缩优化后的基数树的构建。通过类比的思想，我也可以把他看作是字典树，前缀树的一种变体，只不过由于在基数树中存储的信息是大量的数值，因此在进行基数树的三种操作的过程中，要用到大量的位运算，对数值进行快速处理。这个实验很好地加深了我对基数树的理解。
+
+\section{系统实现}
+
+\subsection{实现基数树的节点}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Image/problem_2.png}
+\end{figure}
+
+
+\subsection{实现基数树的基本操作}
+
+
+\subsection{印象较深的细节}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Image/problem_1.png}
+\end{figure}
+
+
+\section{测试}
+
+\subsection{YCSB测试}
+
+\subsubsection{测试配置}
+
+本次测试配置基于Ubuntu 22.04的虚拟运行环境；虚拟机可用磁盘大小为32GB；虚拟机内存为8GB；虚拟机处理器内核总数为6个。测试对象为按要求自行实现的RadixTree，CompressedRadixTree以及RedBlackTree（RedBlackTree使用stl中的set容器实现）。在所有工作负载下，测试程序不断循环对测试对象调用某一种基础操作。查询、插⼊、删除的数值均服从zipfian分布。在每轮测试开始前，重新初始化了测试对象，加载1000个均匀随机分布的int32t类型到测试对象中。每组测试运行了60s从而获得了一个较为稳定的测试结果。工作负载均按照YCSB标准的以下三种工作负载模版进行测试。
+
+\begin{enumerate}
+    \item workload-1: 在该负载下，每轮循环50\%⼏率执⾏find操作,50\%⼏率执⾏insert。
+    \item workload-2: 在该负载下，每轮循环100\%执⾏find操作。
+    \item workload-3: 在该负载下，每轮循环50\%执⾏find, 25\%执⾏insert, 25\%执⾏del。
+\end{enumerate}
+
+\subsubsection{测试结果}
+
+本次实验记录了不同工作负载下，不同基本操作的平均时延、P50（第50百分位数）、P90（第90百分位数）和P99时延（第99百分位数），数据由以下所作图表所示（图表中数值单位为纳秒ns）：
+
+图1，图2，图3分别记录了在三种工作负载下，RadixTree基本操作的时延。图3，图4，图5分别记录了在三种工作负载下，CompressedRadixTree基本操作的时延。图7，图8，图9分别记录了在三种工作负载下，RedBlackTree基本操作的时延。图表中Total列代表了当前工作负载下所有操作的对应时延的平均值。
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.33\textwidth}
+        \centering
+            \begin{tabular}{|c|ccc|}
+            \hline
+                Lat &  Find  & Insert & Total  \\ \hline
+                Avg & 311  & 305  & 308   \\ 
+                P50 & 298  & 293  & 296   \\ 
+                P90 & 420  & 411  & 416   \\ 
+                P99 & 684  & 676  & 680   \\ \hline
+            \end{tabular}
+        \caption{Radix 1}
+    \end{minipage}
+    \begin{minipage}{0.26\textwidth}
+        \centering
+            \begin{tabular}{|c|cc|}
+            \hline
+                Lat &  Find  & Total  \\ \hline
+                Avg & 60 & 60  \\ 
+                P50 & 55 & 55  \\ 
+                P90 & 78 & 78  \\ 
+                P99 & 146 & 146  \\ \hline
+            \end{tabular}
+        \caption{Radix 2}
+    \end{minipage}
+    \begin{minipage}{0.35\textwidth}
+        \centering
+            \begin{tabular}{|c|cccc|}
+            \hline
+                Lat &  Find  & Insert & Delete & Total  \\ \hline
+                Avg & 422  & 501  & 1030  & 594   \\ 
+                P50 & 290  & 451  & 901  & 483   \\ 
+                P90 & 785  & 744  & 1711  & 1006   \\ 
+                P99 & 1103  & 1061  & 2070  & 1334   \\ \hline
+            \end{tabular}
+        \caption{Radix 3}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.33\textwidth}
+        \centering
+            \begin{tabular}{|c|ccc|}
+            \hline
+                Lat &  Find  & Insert & Total  \\ \hline
+                Avg & 341  & 344  & 343   \\ 
+                P50 & 320  & 322  & 321   \\ 
+                P90 & 462  & 466  & 464   \\ 
+                P99 & 721  & 727  & 724   \\ \hline
+            \end{tabular}
+        \caption{CRadix 1}
+    \end{minipage}
+    \begin{minipage}{0.26\textwidth}
+        \centering
+            \begin{tabular}{|c|cc|}
+            \hline
+                Lat &  Find  &  Total  \\ \hline
+                Avg & 80 & 80  \\ 
+                P50 & 75 & 75  \\ 
+                P90 & 103 & 103  \\ 
+                P99 & 138 & 138  \\ \hline
+            \end{tabular}
+        \caption{CRadix 2}
+    \end{minipage}
+    \begin{minipage}{0.35\textwidth}
+        \centering
+            \begin{tabular}{|c|cccc|}
+            \hline
+                Lat &  Find  & Insert & Delete & Total  \\ \hline
+                Avg & 197  & 235  & 557  & 297   \\ 
+                P50 & 177  & 214  & 519  & 272   \\ 
+                P90 & 283  & 337  & 718  & 405   \\ 
+                P99 & 484  & 575  & 1043  & 647   \\ \hline
+            \end{tabular}
+        \caption{CRadix 3}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.33\textwidth}
+        \centering
+            \begin{tabular}{|c|ccc|}
+            \hline
+                Lat &  Find  & Insert & Total  \\ \hline
+                Avg & 581  & 631  & 606   \\ 
+                P50 & 550  & 598  & 574   \\ 
+                P90 & 750  & 806  & 778   \\ 
+                P99 & 1045  & 1115  & 1080   \\ \hline
+            \end{tabular}
+        \caption{RBT 1}
+    \end{minipage}
+    \begin{minipage}{0.26\textwidth}
+        \centering
+            \begin{tabular}{|c|cc|}
+            \hline
+                Lat &  Find  & Total  \\ \hline
+                Avg & 277 & 277  \\ 
+                P50 & 266 & 266  \\ 
+                P90 & 316 & 316  \\ 
+                P99 & 396 & 396  \\ \hline
+            \end{tabular}
+        \caption{RBT 2}
+    \end{minipage}
+    \begin{minipage}{0.35\textwidth}
+        \centering
+            \begin{tabular}{|c|cccc|}
+            \hline
+                Lat &  Find  & Insert & Delete & Total  \\ \hline
+                Avg & 485  & 590  & 649  & 552   \\ 
+                P50 & 443  & 543  & 595  & 506   \\ 
+                P90 & 614  & 745  & 823  & 699   \\ 
+                P99 & 978  & 1190  & 1322  & 1117   \\ \hline
+            \end{tabular}
+        \caption{RBT 3}
+    \end{minipage}
+\end{figure}
+
+\subsubsection{结果分析}
+\begin{enumerate}
+    \item 对比RadixTree和CompressedRadixTree。通过对比RadixTree和CompressedRadixTree在不同workload下的性能表现，
+    我们可以看到，RadixTree在workload-1和workload-2下的性能表现略好于CompressedRadixTree，RadixTree在workload-3下的
+    性能与其在workload-1下的性能相差不大，（workload-2由于只有find操作，树中节点个数较少（1000个），因此性能表现最好）。
+    而CompressedRadixTree在workload-3下的性能表现明显优于未经节点压缩的RadixTree。分析原因可能是由于
+    CompressedRadixTree在节点压缩后，减少了节点的数量，从而减少了内存访问的次数，同时在删除操作时，也会一并将
+    可以合并的节点进行合并，从而提高了性能，因此在含有25\%删除操作的workload-3下，CompressedRadixTree的性能
+    优于RadixTree。结果符合预期。
+    \item 对比RadixTree（包括CompressedRadixTree）和RedBlackTree。我们可以从图表中看到，
+    RadixTree和CompressedRadixTree的时延小于RedBlackTree的时延。
+    结果符合预期。因为基数树不用像红黑树通过自身旋转达到平衡，因此，它在进行节点操作的速度会比红黑树快。
+    首先，红黑树是通过不同节点key关键字的比较决定树的形态，而基数树的每个节点的key关键字自身已经决定了其在树中的位置。
+\end{enumerate}
+
+\section{结论}
+对 Project 的整体总结。
+
+\section{建议}
+这部分不做强制要求，你可以列出自己对该Lab设计改进的建议。
+
+\end{document}
