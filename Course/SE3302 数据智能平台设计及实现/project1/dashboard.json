@@ -1,0 +1,272 @@
+{
+  "title": "Resume Analysis",
+  "version": "2.4",
+  "settings": {
+    "pagenumber": 1,
+    "editable": true,
+    "fullscreenEnabled": false,
+    "parameters": {},
+    "theme": "light"
+  },
+  "pages": [
+    {
+      "title": "Job Seekers",
+      "reports": [
+        {
+          "id": "fa3ddea4-83e4-40c1-9746-b86d940110f4",
+          "title": "C Engineers",
+          "query": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill {skill_name: \"C\"})\nWHERE \n    p.person_name IS NOT NULL AND p.person_name <> \"\" AND\n    (p.person_email IS NOT NULL AND p.person_email <> \"\" OR\n     p.person_phone IS NOT NULL AND p.person_phone <> \"\")\nRETURN \n    p.person_name AS name, \n    p.person_email AS email, \n    p.person_phone AS phone,\n    COALESCE(p.person_gender, \"Unknown\") AS gender,\n    COALESCE(p.person_age, \"Unknown\") AS age,\n    COALESCE(p.person_national, \"Unknown\") AS national",
+          "width": 11,
+          "height": 4,
+          "x": 0,
+          "y": 5,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "columnWidthsType": "Relative (%)",
+            "allowDownload": true
+          }
+        },
+        {
+          "id": "ea70c5a1-07d3-4ed4-a6d3-f3279512afb5",
+          "title": "Gender Ratio",
+          "query": "MATCH (p:Person)\nWITH \n    CASE \n        WHEN p.person_gender IN [\"Female\", \"F\", \"FEMALE\"] THEN \"Female\"\n        WHEN p.person_gender IN [\"Male\", \"M\", \"MALE\"] THEN \"Male\"\n    END AS gender\nWHERE gender IN [\"Female\", \"Male\", \"Not specified\"]\nWITH \n    gender, \n    COUNT(*) AS count\nRETURN \n    gender, \n    count,\n    toFloat(count) / toFloat(sum(count)) * 100 AS percentage",
+          "width": 4,
+          "height": 4,
+          "x": 11,
+          "y": 0,
+          "type": "pie",
+          "selection": {
+            "index": "gender",
+            "value": "count",
+            "key": "(none)"
+          },
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "8ba5cabd-cb42-4be5-99ac-e253bb75e835",
+          "title": "Project Description",
+          "query": "## Knowledge Graph Construction\n\nIn the information age, unstructured data such as text and images are emerging in vast quantities. A key focus of data governance is transforming this unstructured data into structured knowledge graphs, which can support further exploration of potential value within the data. These knowledge graphs can power applications like intelligent question answering, recommendation systems.\n\n![image](https://lpsonline.sas.upenn.edu/sites/default/files/2022-10/plpso-feratures-data-business.jpg)",
+          "width": 11,
+          "height": 5,
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "f1011d3a-3659-4442-9a58-a5f5aecf0ebf",
+          "title": "Age Distribution",
+          "query": "MATCH (p:Person)\nWHERE p.person_age IS NOT NULL\nWITH \n    toInteger(p.person_age) /1 * 1 AS age_group, \n    COUNT(*) AS total\nWHERE age_group IS NOT NULL\nRETURN \n    age_group, \n    total\nORDER BY age_group ASC",
+          "width": 9,
+          "height": 4,
+          "x": 15,
+          "y": 0,
+          "type": "line",
+          "selection": {
+            "x": "age_group",
+            "value": [
+              "total"
+            ]
+          },
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "3b43b205-ee2c-42b2-8ca8-9534a722c50c",
+          "title": "Nationality Heat Map",
+          "query": "MATCH (p:Person)-[:LIVES_IN]->(l:Location)\nWITH l.location_country AS country, count(DISTINCT p) AS job_seekers\nWHERE country IS NOT NULL\nWITH \n    CASE \n        WHEN country = \"India\" THEN \"IND\"\n        WHEN country = \"Hungary\" THEN \"HUN\"\n        WHEN country = \"Kenya\" THEN \"KEN\"\n        WHEN country = \"USA\" THEN \"USA\"\n        WHEN country = \"Qatar\" THEN \"QAT\"\n        WHEN country = \"KSA\" THEN \"SAU\"\n        WHEN country = \"UAE\" THEN \"ARE\"\n        WHEN country = \"Mauritius\" THEN \"MUS\"\n        WHEN country = \"Thailand\" THEN \"THA\"\n        WHEN country = \"Bahrain\" THEN \"BHR\"\n        WHEN country = \"Malaysia\" THEN \"MYS\"\n        WHEN country = \"Singapore\" THEN \"SGP\"\n        WHEN country = \"Oman\" THEN \"OMN\"\n        WHEN country = \"Germany\" THEN \"DEU\"\n        WHEN country = \"Ireland\" THEN \"IRL\"\n        WHEN country = \"Ukraine\" THEN \"UKR\"\n        WHEN country = \"Romania\" THEN \"ROU\"\n        WHEN country = \"Netherlands\" THEN \"NLD\"\n        WHEN country = \"Syria\" THEN \"SYR\"\n        WHEN country = \"Pakistan\" THEN \"PAK\"\n        WHEN country = \"United States\" THEN \"USA\"\n        WHEN country = \"Lebanon\" THEN \"LBN\"\n        WHEN country = \"Denmark\" THEN \"DNK\"\n        WHEN country = \"Switzerland\" THEN \"CHE\"\n        WHEN country = \"Bangladesh\" THEN \"BGD\"\n        WHEN country = \"Sultanate of Oman\" THEN \"OMN\"\n        WHEN country = \"United Arab Emirates\" THEN \"ARE\"\n        WHEN country = \"Egypt\" THEN \"EGY\"\n        WHEN country = \"Botswana\" THEN \"BWA\"\n        WHEN country = \"Canada\" THEN \"CAN\"\n        WHEN country = \"UK\" THEN \"GBR\"\n        WHEN country = \"Saudi Arabia\" THEN \"SAU\"\n        WHEN country = \"Gulf\" THEN NULL\n        WHEN country = \"INDIA\" THEN \"IND\"\n        WHEN country = \"China\" THEN \"CHN\"\n        WHEN country = \"Sri Lanka\" THEN \"LKA\"\n        WHEN country = \"Kuwait\" THEN \"KWT\"\n        WHEN country = \"Iraq\" THEN \"IRQ\"\n        ELSE NULL\n    END AS country_code,\n    job_seekers\nWHERE country_code IS NOT NULL\nWITH country_code, SUM(job_seekers) AS total_job_seekers\nRETURN country_code, total_job_seekers",
+          "width": 9,
+          "height": 5,
+          "x": 11,
+          "y": 4,
+          "type": "choropleth",
+          "selection": {
+            "index": "country_code",
+            "value": "total_job_seekers",
+            "key": "(none)"
+          },
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "2f6b0ab8-0a31-4ada-9461-dd49f81a9f10",
+          "title": "Total Resumes",
+          "query": "\nMATCH (d:Document)\nRETURN COUNT(d) AS total_documents\n\n",
+          "width": 4,
+          "height": 3,
+          "x": 20,
+          "y": 4,
+          "type": "value",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "5bcd14c7-1835-4258-a743-b9779d87c1f8",
+          "title": "Different Countries",
+          "query": "MATCH (p:Person)-[:LIVES_IN]->(l:Location)\nWITH l.location_country AS country, count(DISTINCT p) AS job_seekers\nWHERE country IS NOT NULL\nWITH\n    CASE\n        WHEN country = \"India\" THEN \"IND\"\n        WHEN country = \"Hungary\" THEN \"HUN\"\n        WHEN country = \"Kenya\" THEN \"KEN\"\n        WHEN country = \"USA\" THEN \"USA\"\n        WHEN country = \"Qatar\" THEN \"QAT\"\n        WHEN country = \"KSA\" THEN \"SAU\"\n        WHEN country = \"UAE\" THEN \"ARE\"\n        WHEN country = \"Mauritius\" THEN \"MUS\"\n        WHEN country = \"Thailand\" THEN \"THA\"\n        WHEN country = \"Bahrain\" THEN \"BHR\"\n        WHEN country = \"Malaysia\" THEN \"MYS\"\n        WHEN country = \"Singapore\" THEN \"SGP\"\n        WHEN country = \"Oman\" THEN \"OMN\"\n        WHEN country = \"Germany\" THEN \"DEU\"\n        WHEN country = \"Ireland\" THEN \"IRL\"\n        WHEN country = \"Ukraine\" THEN \"UKR\"\n        WHEN country = \"Romania\" THEN \"ROU\"\n        WHEN country = \"Netherlands\" THEN \"NLD\"\n        WHEN country = \"Syria\" THEN \"SYR\"\n        WHEN country = \"Pakistan\" THEN \"PAK\"\n        WHEN country = \"United States\" THEN \"USA\"\n        WHEN country = \"Lebanon\" THEN \"LBN\"\n        WHEN country = \"Denmark\" THEN \"DNK\"\n        WHEN country = \"Switzerland\" THEN \"CHE\"\n        WHEN country = \"Bangladesh\" THEN \"BGD\"\n        WHEN country = \"Sultanate of Oman\" THEN \"OMN\"\n        WHEN country = \"United Arab Emirates\" THEN \"ARE\"\n        WHEN country = \"Egypt\" THEN \"EGY\"\n        WHEN country = \"Botswana\" THEN \"BWA\"\n        WHEN country = \"Canada\" THEN \"CAN\"\n        WHEN country = \"UK\" THEN \"GBR\"\n        WHEN country = \"Saudi Arabia\" THEN \"SAU\"\n        WHEN country = \"Gulf\" THEN NULL\n        WHEN country = \"INDIA\" THEN \"IND\"\n        WHEN country = \"China\" THEN \"CHN\"\n        WHEN country = \"Sri Lanka\" THEN \"LKA\"\n        WHEN country = \"Kuwait\" THEN \"KWT\"\n        WHEN country = \"Iraq\" THEN \"IRQ\"\n        ELSE NULL\n    END AS country_code,\n    job_seekers\nWHERE country_code IS NOT NULL\nWITH country_code, SUM(job_seekers) AS total_job_seekers\nWITH COLLECT(DISTINCT country_code) AS country_codes\nRETURN SIZE(country_codes) AS total_countries\n\n\n",
+          "width": 4,
+          "height": 2,
+          "x": 20,
+          "y": 7,
+          "type": "value",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        }
+      ]
+    },
+    {
+      "title": "Relationships",
+      "reports": [
+        {
+          "id": "eec641b5-eb4c-4845-bd0e-63b059ac5c8a",
+          "title": "Wiki",
+          "query": "https://zh.wikipedia.org/wiki/Google",
+          "width": 18,
+          "height": 4,
+          "x": 0,
+          "y": 5,
+          "type": "iframe",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "6e7f3cc8-f4d7-46ce-b83f-ae9dd5dc6d01",
+          "title": "Has_Skill Relationships",
+          "query": "MATCH (p:Person)-[r:HAS_SKILL]->(s:Skill)\nWHERE s.skill_name IN [\"C\", \"C++\", \"JAVA\"]\nRETURN p, r, s\nLIMIT 20",
+          "width": 9,
+          "height": 5,
+          "x": 0,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "__Entity__": "id",
+            "Person": "id",
+            "HAS_SKILL": "(label)",
+            "Skill": "id"
+          },
+          "settings": {},
+          "schema": [
+            [
+              "__Entity__",
+              "person_email",
+              "person_address",
+              "person_national",
+              "person_phone",
+              "person_name",
+              "person_gender",
+              "id",
+              "person_age",
+              "person_project",
+              "skill_name",
+              "skill_type"
+            ],
+            [
+              "Person",
+              "person_email",
+              "person_address",
+              "person_national",
+              "person_phone",
+              "person_name",
+              "person_gender",
+              "id",
+              "person_age",
+              "person_project"
+            ],
+            [
+              "HAS_SKILL"
+            ],
+            [
+              "Skill",
+              "skill_name",
+              "skill_type",
+              "id"
+            ]
+          ]
+        },
+        {
+          "id": "2a77577b-56b5-48a1-b455-990d8c47ce9b",
+          "title": "Organizations In India",
+          "query": "\nMATCH (o:Organization)-[r:LOCATED_IN]->(l:Location)\nWHERE l.location_country = \"India\"\nRETURN o, r, l\nLIMIT 10\n",
+          "width": 9,
+          "height": 5,
+          "x": 9,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "__Entity__": "id",
+            "Organization": "id",
+            "LOCATED_IN": "(label)",
+            "Location": "id"
+          },
+          "settings": {},
+          "schema": [
+            [
+              "__Entity__",
+              "organization_type",
+              "id",
+              "organization_name",
+              "location_country",
+              "location_city"
+            ],
+            [
+              "Organization",
+              "organization_type",
+              "id",
+              "organization_name",
+              "location_country",
+              "location_city"
+            ],
+            [
+              "LOCATED_IN"
+            ],
+            [
+              "Location",
+              "location_country",
+              "location_city",
+              "id"
+            ]
+          ]
+        },
+        {
+          "id": "f3b2ea4f-7ffc-4f97-bc51-1bccbb27085f",
+          "title": "GPT",
+          "query": "https://chat18.aichatosrg.com/#/chat/1740663615881",
+          "width": 6,
+          "height": 9,
+          "x": 18,
+          "y": 0,
+          "type": "iframe",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        }
+      ]
+    }
+  ],
+  "parameters": {},
+  "extensions": {
+    "active": true,
+    "activeReducers": [
+      "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
+    ],
+    "query-translator": {
+      "active": true,
+      "modelProvider": "OpenAI",
+      "settings": {}
+    },
+    "forms": {
+      "active": true
+    },
+    "advanced-charts": {
+      "active": true
+    }
+  },
+  "uuid": "95acc4a7-e413-44e2-af16-b60b0002cf11"
+}

@@ -1,0 +1,1 @@
+Start-Process "D:\Downloads\Docker Desktop Installer.exe" -ArgumentList "install --backend=wsl-2 --installation-dir=D:\Docker\docker --wsl-default-data-root=D:\Docker\wsl --accept-license" -Wait
