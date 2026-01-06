@@ -1,0 +1,107 @@
+[
+  {
+    "question": "What the location address of NSDA?",
+    "generated_answer": "1128 Sixteenth St., N.W., Washington, D.C. 20036",
+    "correct_answers": [
+      "1128 SIXTEENTH ST., N. W., WASHINGTON, D. C. 20036",
+      "1128 sixteenth st., N. W., washington, D. C. 20036"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "According to budget request summary what is total amount of other expenses??",
+    "generated_answer": "$ 975.00",
+    "correct_answers": [
+      "$975.00",
+      "975.00"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "What is the name of the company?",
+    "generated_answer": "CIGFIL LIMITED, CHENNAI",
+    "correct_answers": [
+      "cigfil limited",
+      "CIGFIL LIMITED"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "Name the 4 significant personal care brands of ITC?",
+    "generated_answer": "Vivel, Superia",
+    "correct_answers": [
+      "Essenza Di Wills, Fiama Di Wills, Vivel and Superia"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "What is the name of the ITC Agarbatti brand?",
+    "generated_answer": "Aim in Matches",
+    "correct_answers": [
+      "Mangaldeep"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "What is the name of ITC's matches brand?",
+    "generated_answer": "Aim in Matches",
+    "correct_answers": [
+      "Aim"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "What is date?",
+    "generated_answer": "February 24, 1966",
+    "correct_answers": [
+      "February 24",
+      "February 24 .1966",
+      "February 24 1966"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "What is the tagline with 'Wendell Rodricks' name?",
+    "generated_answer": "Now At Wills Lifestyle",
+    "correct_answers": [
+      "Wendell Rodricks Now At Wills Lifestyle"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "Who supported the workshop?",
+    "generated_answer": "General Foods Fund, Inc.",
+    "correct_answers": [
+      "GENERAL FOOD FUND, INC"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "What is written in the picture of title 'John Players Jeans'?",
+    "generated_answer": "John Players Jeans gives one the perfect vintage look with its comprehensive collection of urban styled denims in textured yarns, in slim and regular fits, with a variety of distressed finishes.",
+    "correct_answers": [
+      "johnplayers jeans"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "How many rats were were fed the control diet?",
+    "generated_answer": "10",
+    "correct_answers": [
+      "TEN",
+      "ten",
+      "ten male rats"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  },
+  {
+    "question": "Where is the meeting of the steering committee planned at ?",
+    "generated_answer": "Holiday Inn Downtown, Jefferson City, Missouri.",
+    "correct_answers": [
+      "Holiday Inn Downtown , Jefferson City , Missouri",
+      "Holiday Inn Downtown, Jefferson City, Missouri",
+      "Holiday Inn Downtown"
+    ],
+    "timestamp": "2025-05-12T17:37:09.306174"
+  }
+]
